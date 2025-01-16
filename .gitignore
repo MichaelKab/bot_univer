@@ -1,0 +1,8 @@
+bot.db
+huggingface_cache
+.env
+./save
+__pycache__
+venv
+.idea
+handlers/__pycache__
