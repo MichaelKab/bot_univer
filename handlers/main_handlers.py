@@ -12,7 +12,6 @@ from middlewares import Registration
 from scheduler import *
 from .competition_handlers import gen_leader_board
 load_dotenv()
-GigaChatKey = os.getenv("GigaChatKey")
 
 router = Router()
 logger = logging.getLogger(__name__)

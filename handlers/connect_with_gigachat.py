@@ -16,9 +16,13 @@ from menu import *
 from scheduler import *
 
 gigachat_router = Router()
+GigaChatKey = os.getenv("GigaChatKey")
+
+
 class UploadSolution(StatesGroup):
     waiting_for_Solution = State()
     chat_with_llm = State()
+
 
 @gigachat_router.callback_query(lambda c: "prepare_send" in c.data)
 async def prepare_to_solution(callback_query: CallbackQuery, state: FSMContext):
@@ -26,6 +30,7 @@ async def prepare_to_solution(callback_query: CallbackQuery, state: FSMContext):
     await state.set_state(UploadSolution.waiting_for_Solution)
     await state.update_data(pressed_button={"comp_id": id_comp, "task_id": task_id})
     await callback_query.message.answer("Прикрепите файл решения формата .py")
+
 
 @gigachat_router.message(UploadSolution.waiting_for_Solution)
 async def process_file(message: Message, state: FSMContext, bot: Bot):
@@ -35,6 +40,9 @@ async def process_file(message: Message, state: FSMContext, bot: Bot):
     task_id = mp["task_id"]
     comp_od = mp["comp_id"]
     # Проверяем, что файл имеет расширение .py
+    if not message.document:
+        await message.answer("Ошибка: отправьте файл с расширением .py")
+        return
     file_name = message.document.file_name
 
     if not file_name.endswith(".py"):
@@ -59,19 +67,17 @@ async def process_file(message: Message, state: FSMContext, bot: Bot):
         logger.debug(f'Ошибка чтения файла с кодом:{e}')
         return
     #
-    task_pdf_path: str = get_task_by_id(task_id)['pdf_file']
+    task_txt_path: str = get_task_by_id(task_id)['text_task']
     # task_pdf_path = f"/files/task1/A Это топсорт.pdf"
     now_dir: str = os.path.abspath(os.curdir).replace("\\", "/")
     # task_pdf_path:str = now_dir + task_pdf_path,
     # потом подрузку из бд сделать
     task_condition = ""
     try:
-        file_open = open(task_pdf_path, "rb")
-        pdf_reader = PdfReader(file_open)
-        for page in pdf_reader.pages:
-            task_condition += page.extract_text()
+        file_open = open(task_txt_path, "r")
+        task_condition = file_open.read()
     except Exception as e:
-        await message.reply(f"Ошибка чтения PDF файла с условием задачи: {e}")
+        await message.reply(f"Ошибка чтения файла с условием задачи: {e}")
         return
 
     # gigachat_token = data.get("gigachat_token")
@@ -152,4 +158,3 @@ async def continue_dialog(message: Message, state: FSMContext):
         await message.answer(f"Ошибка при работе с GigaChat: {e}")
         return
     await state.update_data(messages=messages)
-

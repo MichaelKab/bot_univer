@@ -24,10 +24,10 @@ async def main():
 
     bot = Bot(token=API_TOKEN)
     dp = Dispatcher()
-    dp.include_router(main_handlers.router)
     dp.include_router(connect_with_gigachat.gigachat_router)
     dp.include_router(competition_handlers.router_competition)
     dp.include_router(upload.router_upload)
+    dp.include_router(main_handlers.router)
     dp.update.outer_middleware(RegisterMiddleware())
     dp.update.outer_middleware(LoggingMiddleware())
     init_db()
@@ -37,6 +37,6 @@ async def main():
     await dp.start_polling(bot)
 
 
-# Запуск бота
+# Запёуск бота
 if __name__ == "__main__":
     asyncio.run(main())

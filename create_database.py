@@ -32,6 +32,7 @@ def init_db():
         """CREATE TABLE IF NOT EXISTS tasks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name_task TEXT NOT NULL,
+            text_task TEXT NOT NULL,
             pdf_file TEXT NOT NULL,
             author TEXT
         )"""

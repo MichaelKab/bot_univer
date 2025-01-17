@@ -51,28 +51,28 @@ def seed_competitions():
     cursor.execute("SELECT COUNT(*) FROM tasks")
     if cursor.fetchone()[0] == 0:
         cursor.execute(
-            "INSERT INTO tasks (name_task, pdf_file, author) VALUES (?, ?, ?)",
-            ("Это топсорт?", "files/task1/A Это топсорт.pdf", "me")
+            "INSERT INTO tasks (name_task, pdf_file, text_task, author) VALUES (?, ?, ?, ?)",
+            ("Это топсорт?", "files/task1/A Это топсорт.pdf", "files/task1/text_task.txt", "me")
         )
         cursor.execute(
-            "INSERT INTO tasks (name_task, pdf_file, author) VALUES (?, ?, ?)",
-            ("Кто тут король", "files/task2/Кто тут король.pdf", "me")
+            "INSERT INTO tasks (name_task, pdf_file, text_task, author) VALUES (?, ?, ?, ?)",
+            ("Кто тут король", "files/task2/Кто тут король.pdf", "files/task2/text_task.txt", "me")
         )
         cursor.execute(
-            "INSERT INTO tasks (name_task, pdf_file, author) VALUES (?, ?, ?)",
-            ("Диаметр", "files/task3/Диаметр.pdf", "me")
+            "INSERT INTO tasks (name_task, pdf_file, text_task, author) VALUES (?, ?, ?, ?)",
+            ("Диаметр", "files/task3/Диаметр.pdf", "files/task3/text_task.txt", "me")
         )
         cursor.execute(
-            "INSERT INTO tasks (name_task, pdf_file, author) VALUES (?, ?, ?)",
-            ("метеоритный дождь", "files/task4/метеоритный дождь.pdf", "me")
+            "INSERT INTO tasks (name_task, pdf_file, text_task, author) VALUES (?, ?, ?, ?)",
+            ("метеоритный дождь", "files/task4/метеоритный дождь.pdf", "files/task4/text_task.txt", "me")
         )
         cursor.execute(
-            "INSERT INTO tasks (name_task, pdf_file, author) VALUES (?, ?, ?)",
-            ("Опять проекты.pdf", "files/task5/Опять проекты.pdf", "me")
+            "INSERT INTO tasks (name_task, pdf_file, text_task, author) VALUES (?, ?, ?, ?)",
+            ("Опять проекты.pdf", "files/task5/Опять проекты.pdf", "files/task5/text_task.txt", "me")
         )
         cursor.execute(
-            "INSERT INTO tasks (name_task, pdf_file, author) VALUES (?, ?, ?)",
-            ("Танцы с бубном.pdf", "files/task6/Танцы с бубном.pdf", "me")
+            "INSERT INTO tasks (name_task, pdf_file, text_task, author) VALUES (?, ?, ?, ?)",
+            ("Танцы с бубном.pdf", "files/task6/Танцы с бубном.pdf", "files/task6/text_task.txt", "me")
         )
     cursor.execute("SELECT COUNT(*) FROM tasks_and_competitions")
     if cursor.fetchone()[0] == 0:
