@@ -1,19 +1,19 @@
-from aiogram.types import TelegramObject, Message
-import requests
-import uuid
-import requests
-import json
-import time
-from typing import Any, Awaitable, Callable, Dict
+from db_work import insert_log
 import logging
-from aiogram import BaseMiddleware
-from aiogram.types import TelegramObject
-from db_work import is_user_registered
-from aiogram.utils.keyboard import ReplyKeyboardBuilder
-from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import State, StatesGroup
-from dotenv import load_dotenv
 import os
+import time
+import uuid
+from typing import Any, Awaitable, Callable, Dict
+
+import requests
+from aiogram import BaseMiddleware
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.types import TelegramObject
+from aiogram.utils.keyboard import ReplyKeyboardBuilder
+from dotenv import load_dotenv
+
+from db_work import is_user_registered
+
 load_dotenv()
 GigaChatKey = os.getenv("GigaChatKey")
 logger = logging.getLogger(__name__)
@@ -24,21 +24,13 @@ class Registration(StatesGroup):
     waiting_username = State()
 
 
-class SomeMiddleware(BaseMiddleware):
+class RegisterMiddleware(BaseMiddleware):
     async def __call__(
             self,
             handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
             event: TelegramObject,
             data: Dict[str, Any]
     ) -> Any:
-        # ...
-        # Здесь выполняется код на входе в middleware
-        # ...
-        # logger.debug(
-        #     'Вошли в миддлварь %s, тип события %s',
-        #     __class__.__name__,
-        #     event.__class__.__name__
-        # )
         if event.message:
             user_id = event.message.from_user.id
             # fsm_context = FSMContext(storage=event.message.bot.get('storage'), chat=event.message.chat.id,
@@ -53,15 +45,10 @@ class SomeMiddleware(BaseMiddleware):
                 return
 
         result = await handler(event, data)
-        # logger.debug('Выходим из миддлвари  %s', __class__.__name__)
-        # ...
-        # Здесь выполняется код на выходе из middleware
-        # ...
-
         return result
 
 
-class GigachatTokenMiddleware(BaseMiddleware):
+class LoggingMiddleware(BaseMiddleware):
     """Middleware для обновления токена раз в час."""
 
     def __init__(self):
@@ -78,12 +65,8 @@ class GigachatTokenMiddleware(BaseMiddleware):
         """Обрабатывает входящие сообщения."""
         current_time = time.time()
         logger.debug(f'Прошло времени с обновления токена {current_time - self.last_updated}')
-        # Проверяем, нужно ли обновлять токен
-        if self.token is None or current_time - self.last_updated > TOKEN_UPDATE_INTERVAL:
-            self.token = await self.update_token()
-            self.last_updated = current_time
-        # Передаем токен в контекст данных
-        data["gigachat_token"] = self.token
+        if event.message:
+            insert_log(user_id = event.message.from_user.id, text=event.message.text)
         result = await handler(event, data)
         return result
 

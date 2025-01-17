@@ -157,3 +157,13 @@ def get_task_by_id(task_id: int):
     result = dict(cursor.fetchone())
     conn.close()
     return result
+
+
+def insert_log(user_id: int, text: str):
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO logs (user_id, text, time) VALUES (?, ?, ?)",
+        (user_id, text, datetime.now()))
+    conn.commit()
+    conn.close()

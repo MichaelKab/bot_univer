@@ -5,7 +5,7 @@ import dotenv
 from create_database import init_db
 from db_work import *
 from handlers import main_handlers, connect_with_gigachat, competition_handlers, upload
-from middlewares import SomeMiddleware
+from middlewares import RegisterMiddleware, LoggingMiddleware
 from scheduler import *
 from fill_db import seed_competitions
 
@@ -28,7 +28,8 @@ async def main():
     dp.include_router(connect_with_gigachat.gigachat_router)
     dp.include_router(competition_handlers.router_competition)
     dp.include_router(upload.router_upload)
-    dp.update.outer_middleware(SomeMiddleware())
+    dp.update.outer_middleware(RegisterMiddleware())
+    dp.update.outer_middleware(LoggingMiddleware())
     init_db()
     seed_competitions()
     scheduler.start()

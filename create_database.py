@@ -60,7 +60,7 @@ def init_db():
         """CREATE TABLE IF NOT EXISTS logs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id int NOT NULL,
-            action TEXT,
+            text TEXT,
             time TIMESTAMP
         )"""
     )
